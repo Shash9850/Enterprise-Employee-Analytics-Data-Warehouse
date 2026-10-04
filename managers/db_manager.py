@@ -20,15 +20,21 @@ class DatabaseConnection:
             self.connection = None
 
     def connect(self):
-        """Establish a connection to the MySQL database."""
-        if self.connection is None or not self.connection.is_connected():
-            self.connection = mysql.connector.connect(
-                host=DATABASE_CONFIG["host"],
-                port=DATABASE_CONFIG["port"],
-                user=DATABASE_CONFIG["user"],
-                password=DATABASE_CONFIG["password"],
-                database=DATABASE_CONFIG["database"]
-            )
+        """Establish a usable connection to the MySQL database."""
+        try:
+            if self.connection is not None:
+                self.connection.ping(reconnect=True, attempts=3, delay=1)
+                return self.connection
+        except mysql.connector.Error:
+            self.connection = None
+
+        self.connection = mysql.connector.connect(
+            host=DATABASE_CONFIG["host"],
+            port=DATABASE_CONFIG["port"],
+            user=DATABASE_CONFIG["user"],
+            password=DATABASE_CONFIG["password"],
+            database=DATABASE_CONFIG["database"]
+        )
 
         return self.connection
 
