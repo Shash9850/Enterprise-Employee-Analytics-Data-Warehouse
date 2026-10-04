@@ -1,11 +1,11 @@
-import os
+
 
 import mysql.connector
-from dotenv import load_dotenv
+
+from config.config import DW_DATABASE_CONFIG
 
 from managers.db_manager import DatabaseConnection
 
-load_dotenv()
 
 
 class AnalyticsManager:
@@ -16,13 +16,7 @@ class AnalyticsManager:
 
     def get_connection(self):
         """Return a connection to the data warehouse."""
-        return mysql.connector.connect(
-            host=os.getenv("MYSQL_HOST"),
-            port=int(os.getenv("MYSQL_PORT", 3306)),
-            user=os.getenv("MYSQL_USER"),
-            password=os.getenv("MYSQL_PASSWORD"),
-            database=os.getenv("MYSQL_DW_DATABASE")
-        )
+        return mysql.connector.connect(**DW_DATABASE_CONFIG)
 
 
 
